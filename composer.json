@@ -1,0 +1,38 @@
+{
+  "name": "wanphp/plugins-oauth2-resource",
+  "type": "wanphp-plugin",
+  "description": "OAuth 2.0 资源服务器扩展插件",
+  "keywords": [
+    "OAuth 2.0",
+    "resource",
+    "wanphp-plugin"
+  ],
+  "homepage": "https://www.wanphp.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "火子",
+      "email": "wanphp@outlook.com"
+    }
+  ],
+  "require": {
+    "wanphp/installers": "*",
+    "wanphp/libray-slim": "^1.0.0",
+    "predis/predis": "^1.1.0",
+    "league/oauth2-server": "^8.0"
+  },
+  "require-dev": {
+    "zircote/swagger-php": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Wanphp\\Plugins\\OAuth2Resource\\": "/src"
+    }
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://mirrors.aliyun.com/composer/"
+    }
+  }
+}
