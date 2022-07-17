@@ -28,9 +28,7 @@ class OAuthServerMiddleware implements MiddlewareInterface
   public function __construct(ContainerInterface $container)
   {
     $config = $container->get('oauth2Config');
-    $redis = $container->get('redis');
-    $this->redis = new Client($redis['parameters'], $redis['options']);
-    $this->redis->select($config['authRedis']);//选择库
+    $this->redis = new Client($config['redis']['parameters'], $config['redis']['options']);
     //授权服务器分发的公钥
     $this->publicKeyPath = realpath($config['publicKey']);
   }
