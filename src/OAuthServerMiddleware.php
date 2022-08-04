@@ -6,14 +6,12 @@ namespace Wanphp\Plugins\OAuth2Resource;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use Predis\Client;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
+use Wanphp\Libray\Slim\Setting;
 
 class OAuthServerMiddleware implements MiddlewareInterface
 {
@@ -21,13 +19,11 @@ class OAuthServerMiddleware implements MiddlewareInterface
   private string $publicKeyPath;
 
   /**
-   * @param ContainerInterface $container
-   * @throws ContainerExceptionInterface
-   * @throws NotFoundExceptionInterface
+   * @param Setting $setting
    */
-  public function __construct(ContainerInterface $container)
+  public function __construct(Setting $setting)
   {
-    $config = $container->get('oauth2Config');
+    $config = $setting->get('oauth2Config');
     $this->redis = new Client($config['redis']['parameters'], $config['redis']['options']);
     //授权服务器分发的公钥
     $this->publicKeyPath = realpath($config['publicKey']);
