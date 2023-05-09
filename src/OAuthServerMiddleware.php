@@ -6,32 +6,35 @@ namespace Wanphp\Plugins\OAuth2Resource;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use Predis\Client;
+use Predis\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
-use Wanphp\Libray\Slim\Setting;
+use Wanphp\Libray\Mysql\Database;
 
 class OAuthServerMiddleware implements MiddlewareInterface
 {
-  private Client $redis;
+  protected ClientInterface|Database $storage;
   private string $publicKeyPath;
 
   /**
-   * @param Setting $setting
+   * @param array $config
+   * @throws \Exception
    */
-  public function __construct(Setting $setting)
+  public function __construct(array $config)
   {
-    $config = $setting->get('oauth2Config');
-    $this->redis = new Client($config['redis']['parameters'], $config['redis']['options']);
+    if (!isset($config['storage']) && !isset($config['storage']['database'])) throw new \Exception('存储服务器未配置！');
+    if ($config['storage']['type'] == 'mysql') $this->storage = new Database($config['storage']['database']);
+    else  $this->storage = new Client($config['storage']['database']['parameters'], $config['storage']['database']['options']);
     //授权服务器分发的公钥
     $this->publicKeyPath = realpath($config['publicKey']);
   }
 
   public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
   {
-    $accessTokenRepository = new AccessTokenRepository($this->redis);
+    $accessTokenRepository = new AccessTokenRepository($this->storage);
 
     $server = new ResourceServer($accessTokenRepository, $this->publicKeyPath);
     try {
