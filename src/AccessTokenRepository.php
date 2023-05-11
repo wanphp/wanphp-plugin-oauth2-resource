@@ -8,12 +8,13 @@ use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use LogicException;
+use Wanphp\Libray\Slim\CacheInterface;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
-  private AuthCodeStorageInterface $storage;
+  private CacheInterface $storage;
 
-  public function __construct(AuthCodeStorageInterface $storage)
+  public function __construct(CacheInterface $storage)
   {
     $this->storage = $storage;
   }
