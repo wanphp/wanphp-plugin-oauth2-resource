@@ -18,8 +18,6 @@
   "require": {
     "wanphp/installers": "*",
     "wanphp/libray-slim": "^1.0.0",
-    "wanphp/libray-mysql": "^1.1.0",
-    "predis/predis": "^2.1.0",
     "league/oauth2-server": "^8.0"
   },
   "config": {

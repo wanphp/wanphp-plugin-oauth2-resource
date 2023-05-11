@@ -3,31 +3,27 @@
 namespace Wanphp\Plugins\OAuth2Resource;
 
 
+use Exception;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
-use Predis\Client;
-use Predis\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
-use Wanphp\Libray\Mysql\Database;
 
 class OAuthServerMiddleware implements MiddlewareInterface
 {
-  protected ClientInterface|Database $storage;
+  protected AuthCodeStorageInterface $storage;
   private string $publicKeyPath;
 
   /**
    * @param array $config
-   * @throws \Exception
+   * @param AuthCodeStorageInterface $storage
    */
-  public function __construct(array $config)
+  public function __construct(array $config, AuthCodeStorageInterface $storage)
   {
-    if (!isset($config['storage']) || !isset($config['storage']['database'])) throw new \Exception('存储服务器未配置！');
-    if ($config['storage']['type'] == 'mysql') $this->storage = new Database($config['storage']['database']);
-    else  $this->storage = new Client($config['storage']['database']['parameters'], $config['storage']['database']['options']);
+    $this->storage = $storage;
     //授权服务器分发的公钥
     $this->publicKeyPath = realpath($config['publicKey']);
   }
@@ -43,7 +39,7 @@ class OAuthServerMiddleware implements MiddlewareInterface
     } catch (OAuthServerException $exception) {
       return $exception->generateHttpResponse(new Response());
       // @codeCoverageIgnoreStart
-    } catch (\Exception $exception) {
+    } catch (Exception $exception) {
       return (new OAuthServerException($exception->getMessage(), 0, 'BadRequest'))
         ->generateHttpResponse(new Response());
       // @codeCoverageIgnoreEnd
