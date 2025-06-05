@@ -6,23 +6,23 @@ namespace Wanphp\Plugins\OAuth2Resource;
 use Exception;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
-use Wanphp\Libray\Slim\CacheInterface;
 
 class OAuthServerMiddleware implements MiddlewareInterface
 {
-  protected CacheInterface $storage;
+  protected CacheItemPoolInterface $storage;
   private string $publicKeyPath;
 
   /**
    * @param array $config
-   * @param CacheInterface $storage
+   * @param CacheItemPoolInterface $storage
    */
-  public function __construct(array $config, CacheInterface $storage)
+  public function __construct(array $config, CacheItemPoolInterface $storage)
   {
     $this->storage = $storage;
     //授权服务器分发的公钥
